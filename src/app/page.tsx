@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { GoalSearch } from "@/components/search/goal-search";
 
 const plannedFeatures = [
   {
@@ -25,12 +25,6 @@ const plannedFeatures = [
       "Tourism and regional statistics from documented NISR datasets — with the source, coverage, and reference period always visible.",
     status: "Phase 4",
   },
-];
-
-const exampleGoals = [
-  "I want to learn artificial intelligence in Rwanda without spending much money.",
-  "I'm a tourist looking for lesser-known cultural experiences in the Northern Province.",
-  "I want to find startup events and business networks for young entrepreneurs.",
 ];
 
 export default function Home() {
@@ -65,38 +59,8 @@ export default function Home() {
           </p>
 
           <div className="mt-10 rounded-xl border border-border bg-card p-5">
-            <label
-              htmlFor="goal"
-              className="text-sm font-medium text-foreground"
-            >
-              What do you want to achieve?
-            </label>
-            <textarea
-              id="goal"
-              rows={3}
-              placeholder={
-                "e.g. I want to learn robotics in Rwanda without spending much money."
-              }
-              className="mt-3 w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-            />
-            <div className="mt-3 flex items-center justify-between gap-4">
-              <p className="text-xs text-muted-foreground">
-                Search is not wired up yet — it arrives in Phase 2.
-              </p>
-              <Button disabled>Find opportunities</Button>
-            </div>
+            <GoalSearch />
           </div>
-
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {exampleGoals.map((goal) => (
-              <li
-                key={goal}
-                className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground"
-              >
-                “{goal}”
-              </li>
-            ))}
-          </ul>
         </section>
 
         <section className="border-t border-border bg-muted/40">
