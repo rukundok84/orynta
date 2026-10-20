@@ -1,7 +1,8 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// ORYNTA Prisma schema
+// Docs: https://pris.ly/d/prisma-schema
+//
+// The generated client is written to src/generated/prisma (git-ignored).
+// The datasource URL lives in prisma7.config.ts, loaded from .env.
 
 generator client {
   provider = "prisma-client"
@@ -10,4 +11,102 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+/// Broad purpose categories. Used by the rule-based recommendation engine
+/// to match a user's goal ("I want to learn...") to relevant records.
+enum OpportunityCategory {
+  EDUCATION
+  TOURISM
+  EVENT
+  BUSINESS
+  RESEARCH
+}
+
+/// Rwanda's five provinces. An enum (not free text) keeps analytics
+/// filters and map groupings consistent — no "Northern Province" vs
+/// "Northern province" mismatches.
+enum RwandaProvince {
+  KIGALI_CITY
+  SOUTHERN
+  NORTHERN
+  EASTERN
+  WESTERN
+}
+
+/// Provenance status for every recommendation we show. The UI must always
+/// surface this so users can judge how much to trust a record.
+enum VerificationStatus {
+  VERIFIED // Checked against the named source by a human
+  UNVERIFIED // Imported but not yet confirmed
+  PENDING_REVIEW // Submitted/queued for checking
+}
+
+/// Where a record came from, with enough detail to cite it honestly.
+model DataSource {
+  id        String   @id @default(cuid())
+  name      String   @unique // Unique so upserts/imports can't create duplicate sources
+  url       String? // Link to the source document or page, when available
+  description String?
+  citation  String? // How the source should be attributed in outputs
+  referencePeriod String? // e.g. "2022 census", "accessed Jan 2026"
+  geographicCoverage String? // e.g. "National", "Kigali City only"
+
+  opportunities Opportunity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// One opportunity: an educational program, tourism attraction, event,
+/// business network, research center, etc.
+///
+/// Nullable "optional" fields (price, dates, coordinates) reflect reality:
+/// sources often don't publish them. The recommendation engine must treat
+/// missing data as unknown — never invent a value.
+model Opportunity {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+
+  category    OpportunityCategory
+
+  // Location — coordinates power the Phase 3 map; names power display.
+  locationName   String // Human-readable, e.g. "Huye District, Southern Province"
+  province       RwandaProvince
+  district       String
+  latitude       Float? // Null = location not geocoded yet
+  longitude      Float?
+
+  // Budget — all amounts in Rwandan francs (RWF).
+  priceRwf   Int? // Null = price not published by the source
+  isFree     Boolean  @default(false)
+
+  // Time — only relevant for events or programs with fixed dates.
+  startDate  DateTime?
+  endDate    DateTime?
+
+  // Matching aids for the rule-based engine.
+  tags       String[] // e.g. ["robotics", "ai", "training"]
+  keywords   String? // Extra free-text for simple text search
+
+  websiteUrl String? // "Read more" link when the source provides one
+
+  // Provenance — mandatory for traceability.
+  sourceId       String
+  source         DataSource @relation(fields: [sourceId], references: [id])
+  verificationStatus VerificationStatus @default(UNVERIFIED)
+
+  // Honesty flag: TRUE for development placeholders that MUST be replaced
+  // with verified records before the final demonstration.
+  isSampleData   Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Indexes chosen for the queries we know we'll run:
+  // category filtering, province filtering, and text search on name.
+  @@index([category])
+  @@index([province])
+  @@index([name])
 }
