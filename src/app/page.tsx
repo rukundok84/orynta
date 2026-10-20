@@ -35,9 +35,14 @@ export default function Home() {
           <span className="font-mono text-sm font-semibold tracking-widest">
             ORYNTA
           </span>
-          <span className="text-xs text-muted-foreground">
-            NISR Big Data Hackathon 2026 · Track 3: Open Innovation
-          </span>
+          <div className="flex items-center gap-4">
+            <a href="/map" className="text-sm text-muted-foreground hover:text-foreground">
+              Map
+            </a>
+            <span className="hidden text-xs text-muted-foreground sm:inline">
+              NISR Big Data Hackathon 2026 · Track 3: Open Innovation
+            </span>
+          </div>
         </div>
       </header>
 
