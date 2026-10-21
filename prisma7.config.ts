@@ -7,8 +7,10 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
-    seed:
-      "tsx prisma/seed.ts && tsx data/scripts/load-tourism-stats.ts",
+    // Single orchestrator entry point. A "cmd && cmd" chain was NOT
+    // reliable here on Windows (the second step was silently skipped),
+    // so seed-all.ts runs each step in-process and propagates failures.
+    seed: "tsx prisma/seed-all.ts",
   },
   datasource: {
     url: process.env["DATABASE_URL"],
