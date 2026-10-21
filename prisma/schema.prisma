@@ -53,6 +53,7 @@ model DataSource {
   geographicCoverage String? // e.g. "National", "Kigali City only"
 
   opportunities Opportunity[]
+  tourismStats  TourismStat[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -109,4 +110,25 @@ model Opportunity {
   @@index([category])
   @@index([province])
   @@index([name])
+}
+
+/// A single published statistical observation (e.g. "Volcanoes National
+/// Park had 53,197 visits in 2024"). Kept generic — indicator + subject +
+/// year + value — so new datasets (accommodation, arrivals, ...) load
+/// without schema changes.
+model TourismStat {
+  id         String @id @default(cuid())
+  indicator  String // e.g. "Park visits by park"
+  subject    String // e.g. "Volcanoes National Park"
+  year       Int
+  value      Int
+  unit       String @default("visitors")
+
+  sourceId   String
+  source     DataSource @relation(fields: [sourceId], references: [id])
+
+  // The same observation must never be stored twice.
+  @@unique([indicator, subject, year])
+  // The dashboard charts read: WHERE indicator = ? ORDER BY year.
+  @@index([indicator, year])
 }

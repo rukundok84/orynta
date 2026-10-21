@@ -39,6 +39,9 @@ export default function Home() {
             <a href="/map" className="text-sm text-muted-foreground hover:text-foreground">
               Map
             </a>
+            <a href="/analytics" className="text-sm text-muted-foreground hover:text-foreground">
+              Insights
+            </a>
             <span className="hidden text-xs text-muted-foreground sm:inline">
               NISR Big Data Hackathon 2026 · Track 3: Open Innovation
             </span>
