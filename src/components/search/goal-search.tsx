@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { SearchOutcome } from "@/modules/recommendations";
 import { formatRwf, labelProvince } from "@/modules/recommendations/format";
+import { ExplanationCard } from "./explanation-card";
 
 const EXAMPLE_GOALS = [
   "I want to learn robotics in Rwanda without spending much money.",
@@ -123,6 +124,8 @@ export function GoalSearch() {
               ))}
             </ul>
           )}
+
+          <ExplanationCard goal={outcome.criteria.rawGoal} />
 
           <ol className="mt-4 space-y-4">
             {outcome.results.map(({ opportunity, score, reasons }) => (
