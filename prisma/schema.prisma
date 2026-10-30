@@ -59,6 +59,18 @@ model DataSource {
   updatedAt DateTime @updatedAt
 }
 
+/// An account created through the custom auth flow (signup/login).
+/// Passwords are stored as scrypt hashes — never plaintext.
+model User {
+  id       String @id @default(cuid())
+  name     String
+  email    String @unique // Unique so signup can't collide and login lookup is unambiguous
+  passwordHash String // scrypt: see src/modules/auth/password.ts for the format
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 /// One opportunity: an educational program, tourism attraction, event,
 /// business network, research center, etc.
 ///

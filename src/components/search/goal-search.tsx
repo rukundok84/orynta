@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { SearchOutcome } from "@/modules/recommendations";
 import { formatRwf, labelProvince } from "@/modules/recommendations/format";
-import { ExplanationCard } from "./explanation-card";
+import { AssistantCard } from "./assistant-card";
 
 const EXAMPLE_GOALS = [
   "I want to learn robotics in Rwanda without spending much money.",
@@ -60,7 +60,7 @@ export function GoalSearch() {
   return (
     <div>
       <label htmlFor="goal" className="text-sm font-medium text-foreground">
-        What do you want to achieve?
+        What do you want to achieve? (or ask anything)
       </label>
       <textarea
         id="goal"
@@ -77,7 +77,9 @@ export function GoalSearch() {
       />
       <div className="mt-3 flex items-center justify-between gap-4">
         <p className="text-xs text-muted-foreground">
-          Press Ctrl+Enter to search. Records are labelled by verification status.
+          Press Ctrl+Enter to search. Records are labelled by verification
+          status. Questions that aren&apos;t goals are answered by the AI
+          assistant too.
         </p>
         <Button onClick={() => void handleSearch()} disabled={loading}>
           {loading ? "Searching…" : "Find opportunities"}
@@ -125,7 +127,7 @@ export function GoalSearch() {
             </ul>
           )}
 
-          <ExplanationCard goal={outcome.criteria.rawGoal} />
+          <AssistantCard question={outcome.criteria.rawGoal} />
 
           <ol className="mt-4 space-y-4">
             {outcome.results.map(({ opportunity, score, reasons }) => (

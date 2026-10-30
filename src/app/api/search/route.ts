@@ -7,9 +7,10 @@ import { searchRequestSchema } from "@/modules/opportunities/criteria";
  *
  * Body: { "goal": "I want to learn robotics without spending much money" }
  *
- * Runs the deterministic pipeline: parse goal → retrieve records → rank →
- * explain. Validation happens here with Zod; malformed requests get a 400
- * and never reach the database.
+ * Runs the deterministic pipeline: parse goal → retrieve records → rank.
+ * Validation happens here with Zod; malformed requests get a 400 and never
+ * reach the database. This endpoint stays AI-free — the list of results is
+ * always pure data; AI answers come from /api/ask.
  */
 export async function POST(request: Request) {
   let body: unknown;
